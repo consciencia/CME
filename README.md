@@ -33,12 +33,11 @@ It is responsible for:
 Put following code somewhere in your configuration and restart Emacs.
 
 ``` emacs-lisp
-(let ((cme-dir (concat user-emacs-directory "CME")))
+(let ((url "https://raw.githubusercontent.com/consciencia/CME/master/cme-install.el")
+      (cme-dir (concat user-emacs-directory "CME")))
   (when (not (file-directory-p cme-dir))
     (with-temp-buffer
-      (require 'url)
-      (url-retrieve-synchronously
-       "https://raw.githubusercontent.com/consciencia/CME/master/cme-install.el")
+      (url-insert-file-contents url)
       (eval-buffer)))
   (add-to-list 'load-path cme-dir))
 (require 'cme)
