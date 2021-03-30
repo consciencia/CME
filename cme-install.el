@@ -30,7 +30,7 @@
 (let* ((root (expand-file-name user-emacs-directory))
        (cme-root (file-name-as-directory (concat root "CME")))
        (db-root (file-name-as-directory (concat root "semanticdb")))
-       (root-url "https://raw.githubusercontent.com/consciencia/.emacs.d/master/lisp/CME/")
+       (root-url "https://raw.githubusercontent.com/consciencia/CME/master/")
        (urls (loop for name in '("cme-analyze.el" "cme-c.el" "cme-company.el"
                                  "cme-complete.el" "cme-cpp-root.el"
                                  "cme-db-find.el" "cme-db.el" "cme-doc.el"
@@ -43,7 +43,8 @@
        (already-installed (file-directory-p cme-root))
        (should-install (if already-installed
                            (y-or-n-p "CME already installed, reinstall?")
-                         t)))
+                         t))
+       fail)
   (when should-install
     (if already-installed
         (delete-directory cme-root t t))
@@ -54,8 +55,30 @@
                              (car
                               (last
                                (split-string url "/" t))))
+          if (not fail)
           do (progn
                (message "Downloading %s" url)
-               (url-copy-file url dest)))))
+               (when (not (ignore-errors
+                            (url-copy-file url dest)
+                            t))
+                 (setq fail t))
+               (when (file-exists-p dest)
+                 (with-temp-buffer
+                   (insert-file-contents dest)
+                   (goto-char (point-min))
+                   (when (re-search-forward "^\\([[:digit:]]+\\):.+"
+                                            nil
+                                            t)
+                     (setq fail (cons url
+                                      (read (match-string 1)))))))))
+    (when fail
+      (message "CME INSTALLATION FAILED")
+      (when (consp fail)
+        (message "%s failed with %s"
+                 (car fail)
+                 (cdr fail)))
+      (delete-directory cme-root t t)
+      (pop-to-buffer "*Messages*")
+      (goto-char (point-max)))))
 
 ;;; cme-install.el ends here
