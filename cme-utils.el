@@ -339,6 +339,19 @@
   (data-debug-new-buffer "*Inspector*")
   (data-debug-insert-object-slots obj ">>"))
 
+(defmacro cme-silence-eldoc-for (func)
+  `(advice-add #',func
+               :around
+               (lambda (oldfun &rest args)
+                 (let ((eldoc-message-function
+                        #'(lambda (&rest args) nil)))
+                   (apply oldfun args)))))
+
+(defmacro cme-silence-eldoc-for-funcs (&rest funcs)
+  (cons 'progn
+        (loop for func in funcs
+              collect `(cme-silence-eldoc-for ,func))))
+
 
 (provide 'cme-utils)
 ;;; cme-utils.el ends here

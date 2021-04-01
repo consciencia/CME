@@ -254,6 +254,13 @@
     (delete-directory (concat root "semanticdb") t t))
   (funcall write-file version-filename (emacs-version)))
 
+(cme-silence-eldoc-for-funcs yes-or-no-p
+                             y-or-n-p
+                             read-from-minibuffer
+                             read-string
+                             read-regexp
+                             save-some-buffers)
+
 
 (provide 'cme)
 ;;; cme.el ends here
