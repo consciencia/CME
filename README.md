@@ -330,3 +330,7 @@ sufficient, you must invoke it through `M-x`.
 Second issue is (maybe) solvable by bombarding me with complaints.
 I plan to rework contextual parser in future. Meanwhile, you can
 use `cme-find-anything` as an workaround.
+
+# Alternatives
+
+[rtags](https://github.com/Andersbakken/rtags)
