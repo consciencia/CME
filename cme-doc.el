@@ -116,6 +116,7 @@
   (if (not buffer)
       (setq buffer (current-buffer)))
   (cme-with-disabled-grep-db
+      (force)
       (semanticdb-strip-find-results
        (semanticdb-deep-find-tags-by-name
         (if (equal (semantic-tag-class tag) 'variable)

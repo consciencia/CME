@@ -266,14 +266,19 @@ Like `semanticdb-find-tags-for-completion-method' for cscope."
     result))
 
 (setq *cme-grep-db-enabled* t)
+(setq *cme-grep-db-force-disabled* nil)
 (defmacro cme-with-disabled-grep-db (&rest forms)
   (declare (indent 99) (debug t))
   `(let ((*cme-grep-db-enabled* nil))
-     ,@forms))
+     ,@(if (equal (car forms) '(force))
+           `((let ((*cme-grep-db-force-disabled* t))
+               ,@(cdr forms)))
+         forms)))
 
 (defmacro cme-with-enabled-grep-db (&rest forms)
   (declare (indent 99) (debug t))
-  `(let ((*cme-grep-db-enabled* t))
+  `(let ((*cme-grep-db-enabled*
+          (not *cme-grep-db-force-disabled*)))
      ,@forms))
 
 (cl-defmethod semantic-symref-perform-search ((tool semantic-symref-tool-grep))
@@ -363,6 +368,7 @@ Like `semanticdb-find-tags-for-completion-method' for cscope."
 (advice-add 'semantic-idle-summary-idle-function
             :around (lambda (oldfn)
                       (cme-with-disabled-grep-db
+                          (force)
                           (funcall oldfn))))
 
 

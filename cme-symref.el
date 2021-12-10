@@ -35,6 +35,7 @@
   they are used in.
   Display the references in `semantic-symref-results-mode'."
   (interactive (list (cme-with-disabled-grep-db
+                         (force)
                          (cme-semantic-complete-read-tag-project
                           "Find references for: "
                           nil

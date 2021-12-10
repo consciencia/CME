@@ -249,6 +249,7 @@ This helper manages the mark, buffer switching, and pulsing."
 
 (defun cme-find-anything (sym)
   (interactive (list (cme-with-disabled-grep-db
+                         (force)
                          (cme-semantic-complete-read-tag-project
                           "Look for symbol: "
                           nil
@@ -316,6 +317,7 @@ This helper manages the mark, buffer switching, and pulsing."
                 (if decision
                     (ignore-errors
                       (cme-with-disabled-grep-db
+                          (force)
                           (semantic-analyze-current-context point))))))
            (ctx (car ctx-with-time))
            (run-time (cdr ctx-with-time))

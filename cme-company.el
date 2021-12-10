@@ -59,12 +59,14 @@
             :around
             (lambda (oldfn &rest args)
               (cme-with-disabled-grep-db
+                  (force)
                   (apply oldfn args))))
 
 (advice-add #'company-complete-common
             :around
             (lambda (oldfn &rest args)
               (cme-with-disabled-grep-db
+                  (force)
                   (apply oldfn args))))
 
 ;; Getter for project include roots.
