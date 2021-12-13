@@ -176,7 +176,7 @@ noted in their documentation.
   * `M-,` cme-pop-mark
   * `M-*` cme-doc
   * `C-,` cme-proto-impl-toggle
-  * `C--` cme-rename-local-var
+  * `M-r M-v` cme-rename-local-var
   * `M-<next>` cme-next-tag
   * `M-<prior>` cme-previous-tag
   * `M-p` cme-follow-ref-up
@@ -192,7 +192,12 @@ noted in their documentation.
   IDO. When semantical analysis fails, candidates are
   acquired by brute force. Not optimal, but better than
   nothing. This command works as intended even with
-  incomplete index.
+  incomplete index. In case you don't need to jump to symbol
+  definition and jumping to symbol prototype is good
+  enough, use prefix argument to suppress searching in `c`
+  and `cpp` files. When information about location of symbol
+  definition is already in database, passing prefix argument
+  has no effect.
 * **cme-find-anything**<br>
   This function is similar to `find-function`. It enables you to
   interactively search through all symbols in current project and

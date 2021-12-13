@@ -187,7 +187,7 @@
                          (local-set-key (kbd "M-,") 'cme-pop-mark)
                          (local-set-key (kbd "M-*") 'cme-doc)
                          (local-set-key (kbd "C-,") 'cme-proto-impl-toggle)
-                         (local-set-key (kbd "C--") 'cme-rename-local-var)
+                         (local-set-key (kbd "M-r M-v") 'cme-rename-local-var)
                          (local-set-key (kbd "M-<next>") 'cme-next-tag)
                          (local-set-key (kbd "M-<prior>") 'cme-previous-tag)
                          (local-set-key (kbd "M-p") 'cme-follow-ref-up)

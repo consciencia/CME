@@ -56,15 +56,20 @@ Return a table of all matching tags."
                               (cme-flatten-tags-table
                                (or tags (semanticdb-get-tags table)))))
 
-(defun semantic-ia-fast-jump (point &optional ext-ctx)
+(defun semantic-ia-fast-jump (point &optional ext-ctx arg)
   "Jump to the tag referred to by the code at POINT.
 Uses `semantic-analyze-current-context' output to identify an accurate
 origin of the code at point."
-  (interactive "d")
+  (interactive (list (point) nil current-prefix-arg))
+  (unless (or (null arg)
+              (equal arg '(4)))
+    (error "Invalid prefix argument %s" arg))
   ;; Reparse buffer when needed.
   (semantic-fetch-tags)
   (cme-load-all-project-dbs)
   (cme-with-disabled-grep-db
+      (if (equal arg '(4))
+          (force))
       (let* ((ctxt (or ext-ctx
                        (semantic-analyze-current-context point)))
              (pf (and ctxt (reverse (oref ctxt prefix))))

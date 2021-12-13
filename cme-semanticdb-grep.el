@@ -270,10 +270,24 @@ Like `semanticdb-find-tags-for-completion-method' for cscope."
 (defmacro cme-with-disabled-grep-db (&rest forms)
   (declare (indent 99) (debug t))
   `(let ((*cme-grep-db-enabled* nil))
-     ,@(if (equal (car forms) '(force))
-           `((let ((*cme-grep-db-force-disabled* t))
-               ,@(cdr forms)))
-         forms)))
+     ,@(cond
+        ((equal (car forms) '(force))
+         `((let ((*cme-grep-db-force-disabled* t))
+             ,@(cdr forms))))
+        ((and (listp (car forms))
+              (or (eql 'if (caar forms))
+                  (eql 'when (caar forms)))
+              (equal (caddar forms) '(force)))
+         `((let ((*cme-grep-db-force-disabled*
+                  ,(cadar forms)))
+             ,@(cdr forms))))
+        ((and (listp (car forms))
+              (eql 'unless (caar forms))
+              (equal (caddar forms) '(force)))
+         `((let ((*cme-grep-db-force-disabled*
+                  (not ,(cadar forms))))
+             ,@(cdr forms))))
+        (t forms))))
 
 (defmacro cme-with-enabled-grep-db (&rest forms)
   (declare (indent 99) (debug t))
