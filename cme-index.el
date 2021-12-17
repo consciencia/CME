@@ -25,6 +25,17 @@
 
 ;;; Code:
 
+(defun cme-silently-save-all-dbs ()
+  (interactive)
+  (unless noninteractive
+    (message "Saving tag summaries..."))
+  (let ((semanticdb--inhibit-make-directory noninteractive))
+    (mapc (lambda (db)
+            (semanticdb-save-db db t))
+          semanticdb-database-list))
+  (unless noninteractive
+    (message "Saving tag summaries...done")))
+
 (defun cme-index-directory (root &optional logger selection-regex)
   (interactive (list (ido-read-directory-name "Select directory: ")))
   (when (not selection-regex)
@@ -38,7 +49,7 @@
     (setq files (delete (format "%s.." root) files))
     (setq files (delete (format "%s.git" root) files))
     (setq files (delete (format "%s.hg" root) files))
-    (semanticdb-save-all-db)
+    (cme-silently-save-all-dbs)
     (loop for file in files
           do (if (not (file-accessible-directory-p file))
                  (when (string-match-p selection-regex file)
@@ -46,7 +57,7 @@
                          (semanticdb-file-table-object file))
                        (funcall logger (format "Parsing %s [OK]" file))
                      (funcall logger (format "Parsing %s [ERROR]" file))))
-               (progn (semanticdb-save-all-db)
+               (progn (cme-silently-save-all-dbs)
                       (cme-index-directory file
                                            logger
                                            selection-regex))))))
