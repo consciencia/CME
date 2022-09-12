@@ -219,13 +219,21 @@
   (defalias 'semantic-displayer-tooltip
     'semantic-displayor-tooltip))
 
-;; Byte compile all CME functions on startup.
-(mapatoms (lambda (sym)
-            (when (and (s-starts-with-p "cme-" (format "%s" sym))
-                       (fboundp sym))
-              (let ((byte-compile-log-warning-function
-                     (lambda (&rest args))))
-                (byte-compile sym)))))
+(if (version< emacs-version "28")
+    ;; Byte compile all CME functions on startup.
+    (mapatoms (lambda (sym)
+                (when (and (s-starts-with-p "cme-" (format "%s" sym))
+                           (fboundp sym))
+                  (let ((byte-compile-log-warning-function
+                         (lambda (&rest args))))
+                    (byte-compile sym)))))
+  ;; Native compile all CME functions on startup.
+  (mapatoms (lambda (sym)
+              (when (and (s-starts-with-p "cme-" (format "%s" sym))
+                         (fboundp sym))
+                (let ((byte-compile-log-warning-function
+                       (lambda (&rest args))))
+                  (ignore-error (native-compile sym)))))))
 
 ;; Detect emacs version changes and remove semantic DB when it happens.
 ;; DB store tags as eieio object dumps and sometimes, new emacs version
